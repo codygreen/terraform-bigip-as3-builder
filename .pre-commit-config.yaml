@@ -1,0 +1,47 @@
+---
+# spell-checker:disable
+repos:
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.26.1
+    hooks:
+      - id: yamllint
+        files: \.(yml|yaml|talismanrc)$
+        # cloud-init file *must* begin with #cloud-config so do not include in
+        # strict check
+        # kitchen yaml includes ERB code and that trips yamllint.
+        exclude: (cloud_config|kitchen)\.yml$
+        types: [file, yaml]
+        entry: yamllint --strict
+      - id: yamllint
+        name: yamllint-cloud-config
+        files: cloud_config\.yml$
+        entry: yamllint
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.50.0
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_docs
+        args: ['--args=--sort-by required']
+  - repo: https://github.com/jumanjihouse/pre-commit-hooks
+    rev: 2.1.5
+    hooks:
+      - id: bundler-audit
+      - id: reek
+      - id: rubocop
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.7.2.1
+    hooks:
+      - id: shellcheck
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: check-executables-have-shebangs
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: sort-simple-yaml
+      - id: trailing-whitespace
+  - repo: https://github.com/thoughtworks/talisman
+    rev: v1.11.0
+    hooks:
+      - id: talisman-commit
