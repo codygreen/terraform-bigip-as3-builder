@@ -1,4 +1,5 @@
-      %{ for app in apps ~}
+
+        %{ for app in apps ~}
       "${app.name}": {
         "class": "Application",
         "service": {
@@ -12,14 +13,13 @@
           "monitors": [
             "http"
           ],
-          "members": [
-            %{ for pool in app.pool_members ~}
+          "members": ${jsonencode([
+            for pool in app.pool_members:
             {
-              "servicePort": ${pool.servicePort},
-              "serverAddresses": ${jsonencode(pool.serverAddresses)}
+              "servicePort": pool.servicePort,
+              "serverAddresses": pool.serverAddresses
             }
-            %{ endfor }
-          ]
+          ])}
         }
       }
       %{ endfor }
