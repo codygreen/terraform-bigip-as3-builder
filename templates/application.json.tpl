@@ -1,5 +1,5 @@
 
-        %{ for app in apps ~}
+%{ for app in apps ~}
       "${app.name}": {
         "class": "Application",
         "service": {
@@ -21,5 +21,5 @@
             }
           ])}
         }
-      }
-      %{ endfor }
+      },
+%{ endfor }

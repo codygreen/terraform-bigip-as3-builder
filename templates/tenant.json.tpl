@@ -1,4 +1,4 @@
-    "Sample_http_03": {
-      "class": "Tenant",
+    "${tenant_name}": {
       ${application_payload}
+      "class": "Tenant"
     }

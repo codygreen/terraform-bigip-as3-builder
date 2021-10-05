@@ -14,6 +14,7 @@ locals {
   })
   tenant_json = templatefile("${path.module}/templates/tenant.json.tpl", {
       application_payload = local.apps_json
+      tenant_name         = var.tenant_name
   })
 
   as3_json = templatefile("${path.module}/templates/as3.json.tpl", {
