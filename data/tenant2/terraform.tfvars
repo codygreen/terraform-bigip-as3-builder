@@ -10,7 +10,7 @@ applications = [
                 servicePort: 8080
             },
             {
-                serverAddresses: ["10.1.2.100", "10.1.2.101"]
+                serverAddresses: ["10.1.2.102", "10.1.2.103"]
                 servicePort: 8081
             }
         ]
@@ -21,11 +21,11 @@ applications = [
         virtualPort: 8080
         pool_members: [
             {
-                serverAddresses: ["10.1.2.100", "10.1.2.101"]
+                serverAddresses: ["10.1.2.104", "10.1.2.105"]
                 servicePort: 8082
             },
             {
-                serverAddresses: ["10.1.2.100", "10.1.2.101"]
+                serverAddresses: ["10.1.2.106", "10.1.2.107"]
                 servicePort: 8083
             }
         ]
