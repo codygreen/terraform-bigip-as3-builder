@@ -5,21 +5,8 @@ terraform {
 
 
 locals {
-  cleanpayload = {
-      "$schema" = "https://raw.githubusercontent.com/F5Networks/f5-appsvcs-extension/master/schema/latest/as3-schema.json",
-      class = "AS3"
-      action = "deploy"
-      persist = true
-      declaration = {
-        class = "ADC"
-        schemaVersion = "3.0.0"
-        id = "1234556"
-        label = "some ole label"
-        remark = "a remark"
-        controls = {
-          trace = true
-        }
-        "${var.tenant_name}" = merge({class = "Tenant"},{for app in var.applications:
+
+  applications = {for app in var.applications:
               app.name => {
                 class = "Application"
                 service = {
@@ -40,8 +27,25 @@ locals {
                   ]
                 }
               }
-            })
-      }
+            }
+            
+  tenant = {"${var.tenant_name}" = merge({class = "Tenant"},local.applications)}
+  cleanpayload = {
+      "$schema" = "https://raw.githubusercontent.com/F5Networks/f5-appsvcs-extension/master/schema/latest/as3-schema.json",
+      class = "AS3"
+      action = "deploy"
+      persist = true
+      declaration = merge({
+        class = "ADC"
+        schemaVersion = "3.0.0"
+        id = "1234556"
+        label = "some ole label"
+        remark = "a remark"
+        controls = {
+          trace = true
+        }
+      }, 
+      local.tenant)
   }
 
 
