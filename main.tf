@@ -2,11 +2,13 @@ terraform {
   required_version = ">=0.13"
 }
 
-
+resource random_id declaration_id {
+  byte_length = 16
+}
 
 locals {
 
-  applications = {for app in var.applications:
+  applications_http = {for app in var.applications_http:
               app.name => {
                 class   = "Application"
                 service = {
@@ -28,15 +30,40 @@ locals {
                 }
               }
             }
-            
+  
+  applications_https = {for app in var.applications_https:
+              app.name => {
+                class   = "Application"
+                service = {
+                  class            = "Service_HTTP"
+                  virtualAddresses = app.virtualAddresses
+                  virtualPort      = app.virtualPort
+                  pool             = "web_pool"
+                }
+                web_pool = {
+                  class    = "Pool"
+                  monitors = ["http"]
+                  members  = [
+                    for pool in app.pool_members:
+                    {
+                      servicePort     = pool.servicePort
+                      serverAddresses = pool.serverAddresses
+                    }
+                  ]
+                }
+              }
+            }
+
+  virtual_servers = merge(local.applications_http,local.applications_https)
+
   tenant = {
-    "${var.tenant_name}" = merge({class = "Tenant"},local.applications)
+    "${var.tenant_name}" = merge({class = "Tenant"},local.virtual_servers)
   }
   
   declaration_header = {
     class = "ADC"
     schemaVersion = "3.0.0"
-    id = "1234556"
+    id = random_id.declaration_id.hex
     label = "some ole label"
     remark = "a remark"
     controls = {

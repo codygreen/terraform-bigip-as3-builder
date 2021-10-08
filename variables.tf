@@ -2,7 +2,7 @@ variable "tenant_name" {
     description = "AS3 tenant name"
     type = string
 }
-variable "applications" {
+variable "applications_http" {
     description = "List of application objects"
     type = list(object({
         name = string
@@ -13,4 +13,11 @@ variable "applications" {
             servicePort = number
         }))
     }))
+    default = []
+}
+
+variable "applications_https" {
+    description = "List of HTTPS application objects"
+    type = list
+    default = []
 }

@@ -1,5 +1,5 @@
 tenant_name = "test1"
-applications = [
+applications_http = [
     {
         name: "test"
         virtualAddresses: ["10.1.1.100"]
@@ -16,3 +16,4 @@ applications = [
         ]
     }
 ]
+applications_https = []
