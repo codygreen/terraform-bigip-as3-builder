@@ -8,20 +8,20 @@ locals {
 
   applications = {for app in var.applications:
               app.name => {
-                class = "Application"
+                class   = "Application"
                 service = {
-                  class = "Service_HTTP"
+                  class            = "Service_HTTP"
                   virtualAddresses = app.virtualAddresses
-                  virtualPort = app.virtualPort
-                  pool = "web_pool"
+                  virtualPort      = app.virtualPort
+                  pool             = "web_pool"
                 }
                 web_pool = {
-                  class = "Pool"
+                  class    = "Pool"
                   monitors = ["http"]
-                  members = [
+                  members  = [
                     for pool in app.pool_members:
                     {
-                      servicePort = pool.servicePort
+                      servicePort     = pool.servicePort
                       serverAddresses = pool.serverAddresses
                     }
                   ]
@@ -29,23 +29,29 @@ locals {
               }
             }
             
-  tenant = {"${var.tenant_name}" = merge({class = "Tenant"},local.applications)}
+  tenant = {
+    "${var.tenant_name}" = merge({class = "Tenant"},local.applications)
+  }
+  
+  declaration_header = {
+    class = "ADC"
+    schemaVersion = "3.0.0"
+    id = "1234556"
+    label = "some ole label"
+    remark = "a remark"
+    controls = {
+      trace = true
+    }  
+  }
   cleanpayload = {
       "$schema" = "https://raw.githubusercontent.com/F5Networks/f5-appsvcs-extension/master/schema/latest/as3-schema.json",
       class = "AS3"
       action = "deploy"
       persist = true
-      declaration = merge({
-        class = "ADC"
-        schemaVersion = "3.0.0"
-        id = "1234556"
-        label = "some ole label"
-        remark = "a remark"
-        controls = {
-          trace = true
-        }
-      }, 
-      local.tenant)
+      declaration = merge(
+        local.declaration_header, 
+        local.tenant
+      )
   }
 
 
